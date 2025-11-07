@@ -1,0 +1,12 @@
+:host {
+  display: none;
+  width: 50%;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  :host {
+    display: block;
+  }
+}
+

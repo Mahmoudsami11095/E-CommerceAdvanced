@@ -1,0 +1,160 @@
+<div class="min-h-screen flex">
+  <!-- Left Section - Promotional Content -->
+  <app-auth-promo></app-auth-promo>
+
+  <!-- Right Section - OTP Verification Form -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center bg-white px-4 py-12 sm:px-6 lg:px-12">
+    <div class="w-full max-w-md space-y-8">
+      <!-- Back Arrow -->
+      <button
+        type="button"
+        (click)="goBack()"
+        class="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+
+      <!-- Title -->
+      <h1 class="text-3xl font-bold text-gray-900">Verify OTP</h1>
+
+      <!-- Instructions -->
+      <div class="text-gray-600">
+        <p>
+          Please enter the 6-digits code we have sent to:
+          <span class="font-medium text-gray-900">{{ email }}</span>.
+          <button
+            type="button"
+            (click)="editEmail()"
+            class="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+          >
+            Edit
+          </button>
+        </p>
+      </div>
+
+      <!-- OTP Form -->
+      <form [formGroup]="otpForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+          {{ errorMessage }}
+        </div>
+
+        <!-- OTP Input Fields -->
+        <div class="flex justify-between gap-3">
+          <input
+            id="otp1"
+            type="text"
+            formControlName="otp1"
+            maxlength="1"
+            (input)="onInput($event, 0)"
+            (keydown)="onKeyDown($event, 1)"
+            (paste)="onPaste($event)"
+            [class.border-red-500]="otpForm.get('otp1')?.invalid && otpForm.get('otp1')?.touched"
+            class="w-14 h-14 text-center text-2xl font-semibold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+          />
+          <input
+            id="otp2"
+            type="text"
+            formControlName="otp2"
+            maxlength="1"
+            (input)="onInput($event, 1)"
+            (keydown)="onKeyDown($event, 2)"
+            (paste)="onPaste($event)"
+            [class.border-red-500]="otpForm.get('otp2')?.invalid && otpForm.get('otp2')?.touched"
+            class="w-14 h-14 text-center text-2xl font-semibold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+          />
+          <input
+            id="otp3"
+            type="text"
+            formControlName="otp3"
+            maxlength="1"
+            (input)="onInput($event, 2)"
+            (keydown)="onKeyDown($event, 3)"
+            (paste)="onPaste($event)"
+            [class.border-red-500]="otpForm.get('otp3')?.invalid && otpForm.get('otp3')?.touched"
+            class="w-14 h-14 text-center text-2xl font-semibold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+          />
+          <input
+            id="otp4"
+            type="text"
+            formControlName="otp4"
+            maxlength="1"
+            (input)="onInput($event, 3)"
+            (keydown)="onKeyDown($event, 4)"
+            (paste)="onPaste($event)"
+            [class.border-red-500]="otpForm.get('otp4')?.invalid && otpForm.get('otp4')?.touched"
+            class="w-14 h-14 text-center text-2xl font-semibold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+          />
+          <input
+            id="otp5"
+            type="text"
+            formControlName="otp5"
+            maxlength="1"
+            (input)="onInput($event, 4)"
+            (keydown)="onKeyDown($event, 5)"
+            (paste)="onPaste($event)"
+            [class.border-red-500]="otpForm.get('otp5')?.invalid && otpForm.get('otp5')?.touched"
+            class="w-14 h-14 text-center text-2xl font-semibold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+          />
+          <input
+            id="otp6"
+            type="text"
+            formControlName="otp6"
+            maxlength="1"
+            (input)="onInput($event, 5)"
+            (keydown)="onKeyDown($event, 6)"
+            (paste)="onPaste($event)"
+            [class.border-red-500]="otpForm.get('otp6')?.invalid && otpForm.get('otp6')?.touched"
+            class="w-14 h-14 text-center text-2xl font-semibold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+          />
+        </div>
+
+        <!-- Resend Code Timer -->
+        <div class="text-center">
+          <p class="text-sm text-gray-500">
+            <span *ngIf="!canResend">You can request another code in: <span class="font-medium">{{ timer }}s</span></span>
+            <span *ngIf="canResend">
+              Didn't receive the code?
+              <button
+                type="button"
+                (click)="resendCode()"
+                class="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+              >
+                Resend
+              </button>
+            </span>
+          </p>
+        </div>
+
+        <!-- Verify Button -->
+        <button
+          type="submit"
+          [disabled]="isLoading || otpForm.invalid"
+          class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <span *ngIf="!isLoading">Verify Code</span>
+          <span *ngIf="isLoading" class="flex items-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Verifying...
+          </span>
+        </button>
+      </form>
+
+      <!-- Create Account Link -->
+      <div class="text-center">
+        <p class="text-sm text-gray-600">
+          Don't have an account?
+          <a [routerLink]="['/auth/register']" class="font-medium text-blue-600 hover:text-blue-700 transition-colors">
+            Create yours
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
