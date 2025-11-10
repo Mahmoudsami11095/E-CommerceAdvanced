@@ -1,0 +1,6 @@
+// postcss.config.json
+{
+    "plugins": {
+      "@tailwindcss/postcss": {}
+    }
+  }
